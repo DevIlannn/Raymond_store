@@ -20,6 +20,7 @@ import {
     perbaruiProfilPengguna,
     gantiPasswordPengguna,
     ambilPasswordHashById,
+    ambilPenggunaBerhalaman,
 } from "./db.js";
 
 dotenv.config();
@@ -264,6 +265,19 @@ app.put("/api/profil/password", wajibLogin, async (req, res) => {
     } catch (error) {
         console.error("Gagal ganti password:", error.message);
         res.status(500).json({ error: "Gagal mengganti password" });
+    }
+});
+
+app.get("/api/pengguna", wajibAdmin, async (req, res) => {
+    try {
+        const halaman = Math.max(1, parseInt(req.query.halaman) || 1);
+        const batas = 5;
+        const cari = (req.query.cari || "").trim();
+        const hasil = await ambilPenggunaBerhalaman({ halaman, batas, cari });
+        res.json({ pengguna: hasil.pengguna, total: hasil.total, halaman, batas });
+    } catch (error) {
+        console.error("Gagal ambil pengguna:", error.message);
+        res.status(500).json({ error: "Gagal mengambil daftar pengguna" });
     }
 });
 

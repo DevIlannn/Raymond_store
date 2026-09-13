@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,6 +24,14 @@
   padding: 0;
   box-sizing: border-box;
   font-family: var(--font-primary);
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
 }
 
 body {
@@ -131,6 +139,51 @@ body {
   display: block;
 }
 
+.banner-slide-empty {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--color-text) 6%, var(--color-primary));
+}
+
+@keyframes skeletonPulse {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-block {
+  background: linear-gradient(90deg, var(--color-surface, #232323) 25%, rgba(215, 215, 215, 0.15) 50%, var(--color-surface, #232323) 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+}
+
+.banner-skeleton {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.product-skeleton .product-image {
+  background: none;
+}
+
+.product-skeleton .product-image-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+}
+
+.product-skeleton .product-info-line {
+  height: 10px;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+.product-skeleton .product-info-line.short {
+  width: 60%;
+}
+
 .banner-overlay {
   position: absolute;
   inset: 0;
@@ -184,6 +237,20 @@ body {
   gap: 8px;
   padding: 14px 4px;
   border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.category-card.is-active {
+  background: color-mix(in srgb, var(--color-secondary) 16%, transparent);
+}
+
+.category-card.is-active i {
+  stroke: var(--color-secondary);
+}
+
+.category-card.is-active span {
+  color: var(--color-secondary);
 }
 
 .category-card i {
@@ -372,9 +439,12 @@ body {
 }
 
 .products-empty {
+  grid-column: 1 / -1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   padding: 48px 20px;
   text-align: center;
@@ -854,7 +924,7 @@ body {
     <div class="header-brand">
       <img src="assets/brand.png" alt="Raymond Store">
     </div>
-    <button class="header-icon-btn shop" aria-label="Keranjang">
+    <button class="header-icon-btn shop" aria-label="Cart">
       <i data-lucide="shopping-cart-minus"></i>
     </button>
   </header>
@@ -869,19 +939,19 @@ body {
 
     <section class="categories">
       <div class="categories-grid">
-        <div class="category-card">
+        <div class="category-card" data-category="Premium Apps">
           <i data-lucide="crown"></i>
           <span>Premium Apps</span>
         </div>
-        <div class="category-card">
+        <div class="category-card" data-category="VPS & Server">
           <i data-lucide="cloudy"></i>
           <span>VPS & Server</span>
         </div>
-        <div class="category-card">
+        <div class="category-card" data-category="Digital Services">
           <i data-lucide="bolt"></i>
           <span>Digital Services</span>
         </div>
-        <div class="category-card">
+        <div class="category-card" data-category="Other">
           <i data-lucide="layout-dashboard"></i>
           <span>Other</span>
         </div>
@@ -912,16 +982,16 @@ body {
       <div class="menu-modal-head">
         <button class="menu-close" id="menuCloseBtn">
           <i data-lucide="x"></i>
-          Tutup
+          Close
         </button>
         <span class="menu-label">Menu</span>
       </div>
       <ul class="menu-list">
-        <li class="menu-item"><a href="/">Beranda</a></li>
-        <li class="menu-item"><a href="/about/app">Tentang Aplikasi</a></li>
-        <li class="menu-item"><a href="/auth">Masuk</a></li>
+        <li class="menu-item"><a href="/">Home</a></li>
+        <li class="menu-item"><a href="/about/app">About App</a></li>
+        <li class="menu-item" id="menuAuthItem"><a href="/auth" id="menuAuthLink">Login</a></li>
       </ul>
-      <div class="menu-footer">Raymond store didukung oleh pencylgon</div>
+      <div class="menu-footer">Raymond Store powered by Pencylgon</div>
     </div>
   </div>
 
@@ -948,7 +1018,7 @@ body {
       name: item.nama,
       category: item.kategori,
       image: item.gambar,
-      sold: (item.terjual || 0).toLocaleString("id-ID") + " terjual",
+      sold: (item.terjual || 0).toLocaleString("en-US") + " sold",
       description: Array.isArray(item.deskripsi) ? item.deskripsi : [],
       variants: Array.isArray(item.varian) ? item.varian : []
     };
@@ -956,6 +1026,48 @@ body {
 
   function normalisasiBanner(item) {
     return { image: item.gambar };
+  }
+
+  async function muatSesiPengguna() {
+    const menuAuthLink = document.getElementById("menuAuthLink");
+    try {
+      const response = await fetch("/api/me", { credentials: "include" });
+      const data = await response.json();
+
+      if (data.login) {
+        menuAuthLink.textContent = "Logout";
+        menuAuthLink.setAttribute("href", "#");
+        menuAuthLink.addEventListener("click", async (e) => {
+          e.preventDefault();
+          await fetch("/api/logout", { method: "POST", credentials: "include" });
+          window.location.href = "/app";
+        });
+      }
+    } catch (error) {
+      menuAuthLink.textContent = "Login";
+      menuAuthLink.setAttribute("href", "/auth");
+    }
+  }
+
+  function renderSkeletonAwal() {
+    const track = document.getElementById("bannerTrack");
+    track.innerHTML = '<div class="banner-slide"><div class="banner-skeleton skeleton-block"></div></div>';
+    track.style.width = "100%";
+    document.querySelector(".hero").style.display = "block";
+
+    const grid = document.getElementById("productsGrid");
+    grid.innerHTML = "";
+    for (let i = 0; i < 6; i++) {
+      const card = document.createElement("div");
+      card.className = "product-card product-skeleton";
+      card.innerHTML =
+        '<div class="product-image"><div class="product-image-inner skeleton-block"></div></div>' +
+        '<div class="product-info">' +
+          '<div class="product-info-line skeleton-block"></div>' +
+          '<div class="product-info-line short skeleton-block"></div>' +
+        '</div>';
+      grid.appendChild(card);
+    }
   }
 
   async function muatDataToko() {
@@ -1009,11 +1121,20 @@ body {
     track.innerHTML = "";
     dotsWrap.innerHTML = "";
 
+    document.querySelector(".hero").style.display = "block";
+
     if (banners.length === 0) {
-      document.querySelector(".hero").style.display = "none";
+      const slide = document.createElement("div");
+      slide.className = "banner-slide banner-slide-empty";
+      slide.style.width = "100%";
+      slide.innerHTML =
+        '<span class="banner-empty-alt">Promotional Banner</span>' +
+        '<div class="banner-overlay"></div>';
+      track.appendChild(slide);
+      track.style.width = "100%";
+      track.style.animation = "none";
       return;
     }
-    document.querySelector(".hero").style.display = "block";
 
     const count = banners.length;
     const durationPerSlide = 3;
@@ -1024,7 +1145,7 @@ body {
       slide.className = "banner-slide";
       slide.style.width = "100%";
       slide.innerHTML =
-        '<img src="' + banner.image + '" alt="Banner promo ' + (index + 1) + '">' +
+        '<img src="' + banner.image + '" alt="Promotional banner ' + (index + 1) + '">' +
         '<div class="banner-overlay"></div>';
       track.appendChild(slide);
 
@@ -1059,25 +1180,33 @@ body {
 
   let currentPage = 1;
   const itemsPerPage = 12;
+  let activeCategory = null;
+
+  function getFilteredProducts() {
+    if (!activeCategory) return products;
+    return products.filter((product) => product.category === activeCategory);
+  }
 
   function renderProducts(page) {
     const grid = document.getElementById("productsGrid");
     grid.innerHTML = "";
 
-    if (products.length === 0) {
+    const filteredProducts = getFilteredProducts();
+
+    if (filteredProducts.length === 0) {
       grid.innerHTML =
         '<div class="products-empty">' +
           '<i data-lucide="package-search"></i>' +
-          '<span>Belum ada produk tersedia</span>' +
+          '<span>No products available yet</span>' +
         '</div>';
       lucide.createIcons();
-      renderPagination(page);
+      renderPagination(page, filteredProducts.length);
       return;
     }
 
     const start = (page - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    const paginatedProducts = products.slice(start, end);
+    const paginatedProducts = filteredProducts.slice(start, end);
 
     paginatedProducts.forEach((product) => {
       const card = document.createElement("div");
@@ -1086,14 +1215,14 @@ body {
         '<div class="product-image">' +
           '<img src="' + product.image + '" alt="' + product.name + '">' +
           '<div class="product-image-glass"></div>' +
-          '<button class="product-action" aria-label="Lihat selengkapnya" data-product-id="' + product.id + '">' +
+          '<button class="product-action" aria-label="View details" data-product-id="' + product.id + '">' +
             '<i class="fa-solid fa-arrow-up-right-from-square"></i>' +
           '</button>' +
         '</div>' +
         '<div class="product-info">' +
           '<div class="product-name">' + product.name + '</div>' +
           '<div class="product-meta">' +
-            '<span class="product-price">Mulai ' + formatRupiah(getMinDisplayPrice(product)) + '</span>' +
+            '<span class="product-price">From ' + formatRupiah(getMinDisplayPrice(product)) + '</span>' +
             '<span class="product-sold">' + product.sold + '</span>' +
           '</div>' +
         '</div>';
@@ -1121,27 +1250,27 @@ body {
     soonCard.className = "product-card-soon";
     soonCard.innerHTML =
       '<i data-lucide="hourglass"></i>' +
-      '<span>Segera Hadir</span>';
+      '<span>Coming Soon</span>';
     grid.appendChild(soonCard);
     lucide.createIcons();
 
-    renderPagination(page);
+    renderPagination(page, filteredProducts.length);
   }
 
-  function renderPagination(currentPageNum) {
+  function renderPagination(currentPageNum, totalItems) {
     const productsSection = document.querySelector(".products");
     let paginationContainer = document.querySelector(".pagination");
     if (paginationContainer) {
       paginationContainer.remove();
     }
 
-    const totalPages = Math.ceil(products.length / itemsPerPage);
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
     if (totalPages <= 1) return;
 
     let paginationHtml = '<div class="pagination">';
 
     if (currentPageNum > 1) {
-      paginationHtml += '<button onclick="goToPage(' + (currentPageNum - 1) + ')" aria-label="Halaman sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>';
+      paginationHtml += '<button onclick="goToPage(' + (currentPageNum - 1) + ')" aria-label="Previous page"><i class="fa-solid fa-chevron-left"></i></button>';
     }
 
     for (let i = 1; i <= totalPages; i++) {
@@ -1153,7 +1282,7 @@ body {
     }
 
     if (currentPageNum < totalPages) {
-      paginationHtml += '<button onclick="goToPage(' + (currentPageNum + 1) + ')" aria-label="Halaman selanjutnya"><i class="fa-solid fa-chevron-right"></i></button>';
+      paginationHtml += '<button onclick="goToPage(' + (currentPageNum + 1) + ')" aria-label="Next page"><i class="fa-solid fa-chevron-right"></i></button>';
     }
 
     paginationHtml += '</div>';
@@ -1167,8 +1296,26 @@ body {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  renderSkeletonAwal();
   muatDataToko();
+  muatSesiPengguna();
   lucide.createIcons();
+
+  document.querySelectorAll(".category-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      const category = card.dataset.category;
+      if (activeCategory === category) {
+        activeCategory = null;
+        document.querySelectorAll(".category-card").forEach((c) => c.classList.remove("is-active"));
+      } else {
+        activeCategory = category;
+        document.querySelectorAll(".category-card").forEach((c) => c.classList.remove("is-active"));
+        card.classList.add("is-active");
+      }
+      currentPage = 1;
+      renderProducts(1);
+    });
+  });
 
   const headerEl = document.querySelector(".header");
   window.addEventListener("scroll", () => {
@@ -1221,7 +1368,7 @@ body {
       const finalPrice = getDiscountedPrice(variant);
       const isSelected = index === selectedVariantIndex;
       const badge = variant.discountPercent
-        ? '<span class="variant-option-badge">Hemat ' + variant.discountPercent + '%</span>'
+        ? '<span class="variant-option-badge">Save ' + variant.discountPercent + '%</span>'
         : "";
       const originalPrice = variant.discountPercent
         ? '<span class="variant-option-original">' + formatRupiah(variant.price) + '</span>'
@@ -1230,7 +1377,7 @@ body {
         '<button class="variant-option' + (isSelected ? " selected" : "") + '" data-variant-index="' + index + '">' +
           '<div class="variant-option-left">' +
             '<span class="variant-option-name">' + variant.label + '</span>' +
-            '<span class="variant-option-stock">Stok ' + variant.stock + '</span>' +
+            '<span class="variant-option-stock">Stock ' + variant.stock + '</span>' +
           '</div>' +
           '<div class="variant-option-right">' +
             originalPrice +
@@ -1248,14 +1395,14 @@ body {
 
     sheetScroll.innerHTML =
       '<div class="sheet-desc">' + descHtml + '</div>' +
-      '<div class="sheet-section-label">Pilih Varian</div>' +
+      '<div class="sheet-section-label">Select Variant</div>' +
       '<div class="variant-list">' + variantsHtml + '</div>' +
       '<div class="sheet-summary">' +
-        '<span class="sheet-summary-label">Total Harga</span>' +
+        '<span class="sheet-summary-label">Total Price</span>' +
         '<span class="sheet-summary-price" id="sheetTotalPrice">' + formatRupiah(getDiscountedPrice(product.variants[selectedVariantIndex])) + '</span>' +
       '</div>' +
       '<button class="sheet-order-btn" id="sheetOrderBtn">' +
-        '<i class="fa-brands fa-whatsapp"></i>Pesan via WhatsApp' +
+        '<i class="fa-brands fa-whatsapp"></i>Order via WhatsApp' +
       '</button>';
 
     sheetScroll.querySelectorAll(".variant-option").forEach((btn) => {
@@ -1273,11 +1420,11 @@ body {
   function orderViaWhatsapp(product, variant) {
     const finalPrice = getDiscountedPrice(variant);
     const pesan =
-      "Halo Raymond Store, saya mau pesan:\n\n" +
-      "Produk: " + product.name + "\n" +
-      "Varian: " + variant.label + "\n" +
-      "Harga: " + formatRupiah(finalPrice) + "\n\n" +
-      "Mohon info langkah selanjutnya. Terima kasih.";
+      "Hello Raymond Store, I would like to order:\n\n" +
+      "Product: " + product.name + "\n" +
+      "Variant: " + variant.label + "\n" +
+      "Price: " + formatRupiah(finalPrice) + "\n\n" +
+      "Please let me know the next steps. Thank you.";
     const url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(pesan);
     window.open(url, "_blank");
   }

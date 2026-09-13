@@ -180,4 +180,27 @@ export async function ambilPasswordHashById(id) {
     return hasil.rows[0] || null;
 }
 
+export async function ambilPenggunaBerhalaman({ halaman, batas, cari }) {
+    const offset = (halaman - 1) * batas;
+    const kataKunci = "%" + (cari || "") + "%";
+
+    const hasilData = await pool.query(
+        `SELECT id, username, email, nomor_hp, role, dibuat_pada
+         FROM pengguna_raymond
+         WHERE username ILIKE $1 OR email ILIKE $1 OR nomor_hp ILIKE $1
+         ORDER BY dibuat_pada DESC
+         LIMIT $2 OFFSET $3`,
+        [kataKunci, batas, offset]
+    );
+
+    const hasilTotal = await pool.query(
+        `SELECT COUNT(*)::int AS total
+         FROM pengguna_raymond
+         WHERE username ILIKE $1 OR email ILIKE $1 OR nomor_hp ILIKE $1`,
+        [kataKunci]
+    );
+
+    return { pengguna: hasilData.rows, total: hasilTotal.rows[0].total };
+}
+
 export default pool;

@@ -28,6 +28,14 @@
   font-family: 'Poppins', sans-serif;
 }
 
+*::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
+}
+
 body {
   background: var(--color-primary);
   color: var(--color-text);
@@ -497,6 +505,141 @@ body {
   padding: 20px 0;
 }
 
+.user-search {
+  position: relative;
+}
+
+.user-search input {
+  width: 100%;
+  padding: 12px 12px 12px 38px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-size: 13px;
+}
+
+.user-search i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  stroke: var(--color-muted);
+}
+
+.user-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 520px;
+}
+
+.user-table th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  background: var(--color-surface-alt);
+  padding: 10px 12px;
+  white-space: nowrap;
+}
+
+.user-table td {
+  font-size: 12px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.user-table .role-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--color-surface-alt);
+  text-transform: capitalize;
+}
+
+.user-table .role-badge.admin {
+  color: var(--color-secondary);
+  background: color-mix(in srgb, var(--color-secondary) 16%, transparent);
+}
+
+.user-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.user-pagination button {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.user-pagination button.active {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.user-pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@keyframes skeletonPulse {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-block {
+  background: linear-gradient(90deg, var(--color-surface-alt) 25%, var(--color-border) 50%, var(--color-surface-alt) 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+.skeleton-stat-card {
+  height: 84px;
+  border-radius: 14px;
+}
+
+.skeleton-stat-value {
+  height: 20px;
+  width: 60%;
+  display: inline-block;
+}
+
+.skeleton-row {
+  height: 64px;
+  border-radius: 12px;
+}
+
+.skeleton-banner {
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+}
+
+.skeleton-table-row {
+  height: 38px;
+  border-radius: 6px;
+}
+
 .toast {
   position: fixed;
   bottom: 24px;
@@ -571,6 +714,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  animation: tabPanelFadeIn 0.3s ease;
+}
+
+@keyframes tabPanelFadeIn {
+  from { opacity: 0.4; }
+  to { opacity: 1; }
 }
 
 .divider-label {
@@ -624,6 +773,33 @@ body {
             <div class="stat-label">Banner Aktif</div>
           </div>
         </div>
+      </div>
+
+      <div class="section">
+        <div class="section-heading">
+          <i data-lucide="users"></i>
+          <span>Data Pengguna</span>
+        </div>
+        <div class="user-search">
+          <i data-lucide="search"></i>
+          <input type="text" id="userSearchInput" placeholder="Cari username, email, atau nomor HP">
+        </div>
+        <div class="user-table-wrap">
+          <table class="user-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Nomor HP</th>
+                <th>Role</th>
+                <th>Dibuat Pada</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody"></tbody>
+          </table>
+        </div>
+        <div class="user-pagination" id="userPagination"></div>
       </div>
 
       <div class="section">
@@ -732,7 +908,13 @@ body {
 
           <div class="field">
             <label>Kategori</label>
-            <input type="text" id="produkKategori" required>
+            <select id="produkKategori" required>
+              <option value="" disabled selected>Pilih kategori</option>
+              <option value="Premium Apps">Premium Apps</option>
+              <option value="VPS & Server">VPS & Server</option>
+              <option value="Digital Services">Digital Services</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
 
           <div class="field">
@@ -861,6 +1043,7 @@ body {
     await muatDataProfil();
     await muatDataProduk();
     await muatDataBanner();
+    await muatDataPengguna();
   }
 
   async function muatDataProfil() {
@@ -1036,7 +1219,32 @@ body {
     }
   });
 
+  function renderProdukListSkeleton() {
+    const wrap = document.getElementById("produkList");
+    wrap.innerHTML = "";
+    for (let i = 0; i < 3; i++) {
+      const row = document.createElement("div");
+      row.className = "skeleton-block skeleton-row";
+      wrap.appendChild(row);
+    }
+  }
+
+  function renderStatSkeleton() {
+    document.querySelectorAll(".stat-card .stat-value").forEach((el) => {
+      el.classList.add("skeleton-block", "skeleton-stat-value");
+      el.textContent = "";
+    });
+  }
+
+  function clearStatSkeleton() {
+    document.querySelectorAll(".stat-card .stat-value").forEach((el) => {
+      el.classList.remove("skeleton-block", "skeleton-stat-value");
+    });
+  }
+
   async function muatDataProduk() {
+    renderProdukListSkeleton();
+    renderStatSkeleton();
     try {
       const response = await fetch("/api/produk", { credentials: "include" });
       const data = await response.json();
@@ -1045,6 +1253,8 @@ body {
       renderStatistik();
     } catch (error) {
       tampilkanToast("Gagal memuat produk", true);
+    } finally {
+      clearStatSkeleton();
     }
   }
 
@@ -1108,6 +1318,98 @@ body {
     }
   });
 
+  let userHalamanAktif = 1;
+  let userKataKunci = "";
+  let userSearchTimeout = null;
+
+  function renderUserTableSkeleton() {
+    const tbody = document.getElementById("userTableBody");
+    tbody.innerHTML = "";
+    for (let i = 0; i < 5; i++) {
+      const row = document.createElement("tr");
+      row.innerHTML = '<td colspan="6"><div class="skeleton-block skeleton-table-row"></div></td>';
+      tbody.appendChild(row);
+    }
+    document.getElementById("userPagination").innerHTML = "";
+  }
+
+  async function muatDataPengguna() {
+    renderUserTableSkeleton();
+    try {
+      const params = new URLSearchParams({ halaman: userHalamanAktif, cari: userKataKunci });
+      const response = await fetch("/api/pengguna?" + params.toString(), { credentials: "include" });
+      const data = await response.json();
+      renderUserTable(data.pengguna || []);
+      renderUserPagination(data.total || 0, data.batas || 5);
+    } catch (error) {
+      tampilkanToast("Gagal memuat data pengguna", true);
+    }
+  }
+
+  function formatTanggalPengguna(iso) {
+    if (!iso) return "-";
+    const tanggal = new Date(iso);
+    return tanggal.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+  }
+
+  function renderUserTable(daftarPengguna) {
+    const tbody = document.getElementById("userTableBody");
+    tbody.innerHTML = "";
+
+    if (daftarPengguna.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state">Tidak ada data pengguna</div></td></tr>';
+      return;
+    }
+
+    daftarPengguna.forEach((pengguna) => {
+      const row = document.createElement("tr");
+      row.innerHTML =
+        '<td>' + pengguna.id + '</td>' +
+        '<td>' + pengguna.username + '</td>' +
+        '<td>' + pengguna.email + '</td>' +
+        '<td>' + pengguna.nomor_hp + '</td>' +
+        '<td><span class="role-badge' + (pengguna.role === "admin" ? " admin" : "") + '">' + pengguna.role + '</span></td>' +
+        '<td>' + formatTanggalPengguna(pengguna.dibuat_pada) + '</td>';
+      tbody.appendChild(row);
+    });
+  }
+
+  function renderUserPagination(total, batas) {
+    const wrap = document.getElementById("userPagination");
+    wrap.innerHTML = "";
+
+    const totalHalaman = Math.ceil(total / batas);
+    if (totalHalaman <= 1) return;
+
+    let html = '<button ' + (userHalamanAktif <= 1 ? "disabled" : "") + ' data-page="' + (userHalamanAktif - 1) + '"><i data-lucide="chevron-left"></i></button>';
+
+    for (let i = 1; i <= totalHalaman; i++) {
+      html += '<button class="' + (i === userHalamanAktif ? "active" : "") + '" data-page="' + i + '">' + i + '</button>';
+    }
+
+    html += '<button ' + (userHalamanAktif >= totalHalaman ? "disabled" : "") + ' data-page="' + (userHalamanAktif + 1) + '"><i data-lucide="chevron-right"></i></button>';
+
+    wrap.innerHTML = html;
+    lucide.createIcons();
+  }
+
+  document.getElementById("userPagination").addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-page]");
+    if (!btn || btn.disabled) return;
+    userHalamanAktif = Number(btn.dataset.page);
+    muatDataPengguna();
+  });
+
+  document.getElementById("userSearchInput").addEventListener("input", (e) => {
+    clearTimeout(userSearchTimeout);
+    const nilai = e.target.value;
+    userSearchTimeout = setTimeout(() => {
+      userKataKunci = nilai.trim();
+      userHalamanAktif = 1;
+      muatDataPengguna();
+    }, 350);
+  });
+
   function renderStatistik() {
     document.getElementById("statTotalProduk").textContent = produkCache.length;
 
@@ -1123,7 +1425,16 @@ body {
     document.getElementById("statTotalBanner").textContent = bannerCache.length;
   }
 
+  function renderBannerSkeleton() {
+    const dashboardWrap = document.getElementById("dashboardBannerList");
+    const settingsWrap = document.getElementById("settingsBannerList");
+    const skeletonHtml = '<div class="skeleton-block skeleton-banner"></div>'.repeat(2);
+    dashboardWrap.innerHTML = skeletonHtml;
+    settingsWrap.innerHTML = skeletonHtml;
+  }
+
   async function muatDataBanner() {
+    renderBannerSkeleton();
     try {
       const response = await fetch("/api/banner", { credentials: "include" });
       const data = await response.json();
@@ -1263,7 +1574,22 @@ body {
       document.querySelectorAll(".tab-item").forEach((item) => item.classList.remove("active"));
       document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
       tab.classList.add("active");
-      document.getElementById(tab.dataset.panel).classList.add("active");
+      const targetPanel = tab.dataset.panel;
+      document.getElementById(targetPanel).classList.add("active");
+
+      if (targetPanel === "panelDashboard") {
+        renderStatSkeleton();
+        renderProdukListSkeleton();
+        renderBannerSkeleton();
+        renderUserTableSkeleton();
+        setTimeout(() => {
+          clearStatSkeleton();
+          renderStatistik();
+          renderProdukList();
+          renderBannerPreview();
+          muatDataPengguna();
+        }, 400);
+      }
     });
   });
 

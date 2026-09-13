@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Masuk atau Daftar - Raymond Store</title>
+<title>Login or Register - Raymond Store</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -25,6 +25,11 @@
   font-family: 'Poppins', sans-serif;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   background: url('assets/auth-bg.jpg') center / cover no-repeat;
   color: var(--color-text);
@@ -37,9 +42,11 @@ body {
   width: 100%;
   max-width: 560px;
   min-height: 100vh;
+  height: 100vh;
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .auth-header {
@@ -66,6 +73,7 @@ body {
   border: none;
   color: var(--color-text);
   cursor: pointer;
+  text-decoration: none;
 }
 
 .auth-back i {
@@ -278,27 +286,66 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+@keyframes skeletonPulse {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-border) 50%, var(--color-surface) 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+  border-radius: 8px;
+  color: transparent !important;
+  pointer-events: none;
+  user-select: none;
+}
+
+.auth-loading .sheet-label,
+.auth-loading .sheet-title,
+.auth-loading .form-input,
+.auth-loading .form-checkbox label,
+.auth-loading .auth-submit,
+.auth-loading .footer-left div,
+.auth-loading .footer-brand img {
+  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-border) 50%, var(--color-surface) 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.4s ease-in-out infinite;
+  border-radius: 8px;
+  color: transparent !important;
+}
+
+.auth-loading .form-input {
+  border-color: transparent;
+}
+
+.auth-loading .form-field label,
+.auth-loading .form-checkbox input,
+.auth-loading .auth-mode-toggle button {
+  visibility: hidden;
+}
 </style>
 </head>
 <body>
-<div class="app">
+<div class="app auth-loading" id="appRoot">
 
   <header class="auth-header">
-    <button class="auth-back" aria-label="Kembali">
+    <a class="auth-back" aria-label="Back" href="/app">
       <i data-lucide="chevron-left"></i>
-    </button>
+    </a>
     <div class="auth-mode-toggle">
-      <button class="active" id="triggerSignIn" data-mode="login">Masuk</button>
+      <button class="active" id="triggerSignIn" data-mode="login">Sign In</button>
       <span class="divider">|</span>
-      <button id="triggerSignUp" data-mode="register">Daftar</button>
+      <button id="triggerSignUp" data-mode="register">Sign Up</button>
     </div>
   </header>
 
   <div class="auth-sheet">
 
     <div class="sheet-panel active" id="panelLogin">
-      <div class="sheet-label">Masuk</div>
-      <div class="sheet-title">Selamat Datang Kembali</div>
+      <div class="sheet-label">Sign In</div>
+      <div class="sheet-title">Welcome Back</div>
       <form class="form-grid">
         <div class="form-field">
             <input class="form-input" type="text" id="loginUsername" placeholder=" " autocomplete="username">
@@ -312,10 +359,10 @@ body {
 
         <div class="form-checkbox">
           <input type="checkbox" id="loginRemember">
-          <label for="loginRemember">Ingat saya di perangkat ini</label>
+          <label for="loginRemember">Remember me on this device</label>
         </div>
 
-        <button class="auth-submit" type="submit">Masuk</button>
+        <button class="auth-submit" type="submit">Sign In</button>
       </form>
 
       <footer class="footer">
@@ -332,8 +379,8 @@ body {
     </div>
 
     <div class="sheet-panel" id="panelRegister" style="display: none;">
-      <div class="sheet-label">Daftar</div>
-      <div class="sheet-title">Buat Akun Baru</div>
+      <div class="sheet-label">Sign Up</div>
+      <div class="sheet-title">Create New Account</div>
       <form class="form-grid">
         <div class="form-field">
             <input class="form-input" type="text" id="registerUsername" placeholder=" " autocomplete="username">
@@ -343,7 +390,7 @@ body {
         <div class="form-row-2">
           <div class="form-field">
             <input class="form-input" type="tel" id="registerPhone" placeholder=" " autocomplete="tel">
-            <label for="registerPhone">Nomor HP</label>
+            <label for="registerPhone">Phone Number</label>
           </div>
 
           <div class="form-field">
@@ -359,15 +406,15 @@ body {
 
         <div class="form-field">
             <input class="form-input" type="password" id="registerConfirmPassword" placeholder=" " autocomplete="new-password">
-            <label for="registerConfirmPassword">Konfirmasi Password</label>
+            <label for="registerConfirmPassword">Confirm Password</label>
           </div>
 
         <div class="form-checkbox">
           <input type="checkbox" id="registerTerms">
-          <label for="registerTerms">Saya menyetujui <a href="#">Syarat & Ketentuan</a> Raymond Store</label>
+          <label for="registerTerms">I agree to the <a href="#">Terms & Conditions</a> of Raymond Store</label>
         </div>
 
-        <button class="auth-submit" type="submit">Daftar</button>
+        <button class="auth-submit" type="submit">Sign Up</button>
       </form>
 
       <footer class="footer">
@@ -427,6 +474,10 @@ body {
     e.preventDefault();
     const username = document.getElementById("loginUsername").value.trim();
     const password = document.getElementById("loginPassword").value;
+    const submitBtn = formLogin.querySelector(".auth-submit");
+    const originalLabel = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.classList.add("skeleton");
 
     try {
       const response = await fetch("/api/login", {
@@ -438,7 +489,10 @@ body {
       const data = await response.json();
 
       if (!response.ok) {
-        tampilkanPesanError(formLogin, data.error || "Gagal login");
+        tampilkanPesanError(formLogin, data.error || "Login failed");
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("skeleton");
+        submitBtn.textContent = originalLabel;
         return;
       }
 
@@ -448,7 +502,10 @@ body {
         window.location.href = "/app";
       }
     } catch (error) {
-      tampilkanPesanError(formLogin, "Tidak bisa terhubung ke server");
+      tampilkanPesanError(formLogin, "Unable to connect to the server");
+      submitBtn.disabled = false;
+      submitBtn.classList.remove("skeleton");
+      submitBtn.textContent = originalLabel;
     }
   });
 
@@ -462,9 +519,14 @@ body {
     const setuju = document.getElementById("registerTerms").checked;
 
     if (!setuju) {
-      tampilkanPesanError(formRegister, "Setujui syarat dan ketentuan terlebih dahulu");
+      tampilkanPesanError(formRegister, "Please agree to the terms and conditions first");
       return;
     }
+
+    const submitBtn = formRegister.querySelector(".auth-submit");
+    const originalLabel = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.classList.add("skeleton");
 
     try {
       const response = await fetch("/api/register", {
@@ -476,17 +538,29 @@ body {
       const data = await response.json();
 
       if (!response.ok) {
-        tampilkanPesanError(formRegister, data.error || "Gagal mendaftar");
+        tampilkanPesanError(formRegister, data.error || "Registration failed");
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("skeleton");
+        submitBtn.textContent = originalLabel;
         return;
       }
 
       window.location.href = "/app";
     } catch (error) {
-      tampilkanPesanError(formRegister, "Tidak bisa terhubung ke server");
+      tampilkanPesanError(formRegister, "Unable to connect to the server");
+      submitBtn.disabled = false;
+      submitBtn.classList.remove("skeleton");
+      submitBtn.textContent = originalLabel;
     }
   });
 
   lucide.createIcons();
+
+  window.requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.getElementById("appRoot").classList.remove("auth-loading");
+    }, 400);
+  });
 </script>
 </body>
 </html>
