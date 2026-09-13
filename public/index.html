@@ -94,19 +94,16 @@ body {
 }
 
 .header-brand {
-  flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .header-brand img {
   height: 28px;
   width: auto;
-  object-fit: contain;
-}
-
-.header-icon-btn.shop {
-  position: relative;
+  object-fit: cover;
+  transform: scale(2.25);
+  margin-left: 10px;
 }
 
 .hero {
@@ -587,9 +584,10 @@ body {
 }
 
 .footer-brand img {
-  height: 20px;
+  height: 40px;
   width: auto;
-  object-fit: contain;
+  object-fit: cover;
+  transform: scale(2.05) translateX(-10px);
 }
 
 .menu-overlay {
@@ -918,14 +916,11 @@ body {
 <body>
 <div class="app">
   <header class="header">
-    <button class="header-icon-btn" aria-label="Menu">
-      <i data-lucide="text-align-start"></i>
-    </button>
     <div class="header-brand">
       <img src="assets/brand.png" alt="Raymond Store">
     </div>
-    <button class="header-icon-btn shop" aria-label="Cart">
-      <i data-lucide="shopping-cart-minus"></i>
+    <button class="header-icon-btn" aria-label="Menu">
+      <i data-lucide="text-align-end"></i>
     </button>
   </header>
 
@@ -980,11 +975,11 @@ body {
   <div class="menu-overlay" id="menuOverlay">
     <div class="menu-modal">
       <div class="menu-modal-head">
+        <span class="menu-label">Menu</span>
         <button class="menu-close" id="menuCloseBtn">
           <i data-lucide="x"></i>
           Close
         </button>
-        <span class="menu-label">Menu</span>
       </div>
       <ul class="menu-list">
         <li class="menu-item"><a href="/">Home</a></li>
