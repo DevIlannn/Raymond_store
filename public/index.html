@@ -6,7 +6,7 @@
 <title>Raymond Store</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <style>
@@ -15,13 +15,15 @@
   --color-secondary: #e9204f;
   --color-muted: #d7d7d7;
   --color-text: #ffffff;
+  --font-primary: 'Poppins', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-primary);
 }
 
 body {
@@ -34,10 +36,18 @@ body {
 
 .app {
   width: 100%;
-  max-width: 480px;
+  max-width: 560px;
   min-height: 100vh;
   background: var(--color-primary);
   position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -203,6 +213,33 @@ body {
   gap: 14px;
 }
 
+.product-card-soon {
+  grid-column: 1 / -1;
+  aspect-ratio: 21 / 9;
+  border-radius: 14px;
+  border: 1.5px dashed rgba(215, 215, 215, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.product-card-soon i {
+  width: 26px;
+  height: 26px;
+  stroke: var(--color-muted);
+  stroke-width: 1.5;
+  opacity: 0.6;
+}
+
+.product-card-soon span {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-muted);
+  opacity: 0.7;
+}
+
 .product-card {
   display: flex;
   flex-direction: column;
@@ -222,6 +259,53 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.product-image-glass {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.product-image-glass::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--color-text) 0%, transparent) 0%,
+    color-mix(in srgb, var(--color-text) 5%, transparent) 35%,
+    color-mix(in srgb, var(--color-text) 35%, transparent) 50%,
+    color-mix(in srgb, var(--color-text) 5%, transparent) 65%,
+    color-mix(in srgb, var(--color-text) 0%, transparent) 100%
+  );
+  transform: skewX(-20deg);
+  transition: left 0.65s ease;
+}
+
+.product-card.is-glass-active .product-image-glass::before {
+  left: 130%;
+}
+
+.product-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-text) 0%, transparent);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  transition: background 0.4s ease, backdrop-filter 0.4s ease;
+  pointer-events: none;
+}
+
+.product-card.is-glass-active .product-image::after {
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
 }
 
 .product-action {
@@ -270,6 +354,7 @@ body {
 }
 
 .product-price {
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
   color: var(--color-secondary);
@@ -313,7 +398,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 480px;
+  max-width: 560px;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -409,8 +494,8 @@ body {
 
 .footer {
   border-top: 1px solid rgba(215, 215, 215, 0.15);
-  margin: 24px 20px;
-  padding: 20px 0;
+  margin: 24px 20px 0;
+  padding: 20px 0 calc(84px + env(safe-area-inset-bottom));
   font-size: 11px;
   color: var(--color-muted);
   display: flex;
@@ -441,7 +526,7 @@ body {
   position: fixed;
   inset: 0;
   width: 100%;
-  max-width: 480px;
+  max-width: 560px;
   margin: 0 auto;
   background: rgba(0, 0, 0, 0.55);
   z-index: 100;
@@ -538,7 +623,7 @@ body {
   position: fixed;
   inset: 0;
   width: 100%;
-  max-width: 480px;
+  max-width: 560px;
   margin: 0 auto;
   background: rgba(0, 0, 0, 0.55);
   z-index: 100;
@@ -693,6 +778,7 @@ body {
 }
 
 .variant-option-original {
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 400;
   color: var(--color-muted);
@@ -701,6 +787,7 @@ body {
 }
 
 .variant-option-final {
+  font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 700;
   color: var(--color-secondary);
@@ -729,6 +816,7 @@ body {
 }
 
 .sheet-summary-price {
+  font-family: var(--font-mono);
   font-size: 20px;
   font-weight: 700;
   color: var(--color-text);
@@ -766,44 +854,46 @@ body {
     <div class="header-brand">
       <img src="assets/brand.png" alt="Raymond Store">
     </div>
-    <button class="header-icon-btn shop" aria-label="Shop">
+    <button class="header-icon-btn shop" aria-label="Keranjang">
       <i data-lucide="shopping-cart-minus"></i>
     </button>
   </header>
 
-  <section class="hero">
-    <div class="banner-viewport">
-      <div class="banner-track" id="bannerTrack"></div>
-      <div class="banner-dots" id="bannerDots"></div>
-    </div>
-  </section>
+  <main class="app-main">
+    <section class="hero">
+      <div class="banner-viewport">
+        <div class="banner-track" id="bannerTrack"></div>
+        <div class="banner-dots" id="bannerDots"></div>
+      </div>
+    </section>
 
-  <section class="categories">
-    <div class="categories-grid">
-      <div class="category-card">
-        <i data-lucide="crown"></i>
-        <span>Premium Apps</span>
+    <section class="categories">
+      <div class="categories-grid">
+        <div class="category-card">
+          <i data-lucide="crown"></i>
+          <span>Premium Apps</span>
+        </div>
+        <div class="category-card">
+          <i data-lucide="cloudy"></i>
+          <span>VPS & Server</span>
+        </div>
+        <div class="category-card">
+          <i data-lucide="bolt"></i>
+          <span>Digital Services</span>
+        </div>
+        <div class="category-card">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Other</span>
+        </div>
       </div>
-      <div class="category-card">
-        <i data-lucide="cloudy"></i>
-        <span>VPS & Server</span>
-      </div>
-      <div class="category-card">
-        <i data-lucide="bolt"></i>
-        <span>Digital Services</span>
-      </div>
-      <div class="category-card">
-        <i data-lucide="layout-dashboard"></i>
-        <span>Other</span>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <hr class="section-divider">
+    <hr class="section-divider">
 
-  <section class="products">
-    <div class="products-grid" id="productsGrid"></div>
-  </section>
+    <section class="products">
+      <div class="products-grid" id="productsGrid"></div>
+    </section>
+  </main>
 
   <footer class="footer">
     <div class="footer-left">
@@ -822,16 +912,16 @@ body {
       <div class="menu-modal-head">
         <button class="menu-close" id="menuCloseBtn">
           <i data-lucide="x"></i>
-          Close
+          Tutup
         </button>
         <span class="menu-label">Menu</span>
       </div>
       <ul class="menu-list">
-        <li class="menu-item"><a href="#">Home</a></li>
-        <li class="menu-item"><a href="#">About Us</a></li>
-        <li class="menu-item"><a href="#">Login</a></li>
+        <li class="menu-item"><a href="/">Beranda</a></li>
+        <li class="menu-item"><a href="/about/app">Tentang Aplikasi</a></li>
+        <li class="menu-item"><a href="/auth">Masuk</a></li>
       </ul>
-      <div class="menu-footer">Raymond store supported by pencylgon</div>
+      <div class="menu-footer">Raymond store didukung oleh pencylgon</div>
     </div>
   </div>
 
@@ -847,6 +937,7 @@ body {
 
 <script>
   const whatsappNumber = "6285137961950";
+  const isTouchDevice = window.matchMedia("(hover: none)").matches;
 
   let banners = [];
   let products = [];
@@ -994,6 +1085,7 @@ body {
       card.innerHTML =
         '<div class="product-image">' +
           '<img src="' + product.image + '" alt="' + product.name + '">' +
+          '<div class="product-image-glass"></div>' +
           '<button class="product-action" aria-label="Lihat selengkapnya" data-product-id="' + product.id + '">' +
             '<i class="fa-solid fa-arrow-up-right-from-square"></i>' +
           '</button>' +
@@ -1005,9 +1097,33 @@ body {
             '<span class="product-sold">' + product.sold + '</span>' +
           '</div>' +
         '</div>';
-      card.addEventListener("click", () => openSheet(product.id));
+      if (isTouchDevice) {
+        card.addEventListener("click", () => {
+          const alreadyActive = card.classList.contains("is-glass-active");
+          document.querySelectorAll(".product-card.is-glass-active").forEach((activeCard) => {
+            if (activeCard !== card) activeCard.classList.remove("is-glass-active");
+          });
+          if (!alreadyActive) {
+            card.classList.add("is-glass-active");
+            return;
+          }
+          openSheet(product.id);
+        });
+      } else {
+        card.addEventListener("mouseenter", () => card.classList.add("is-glass-active"));
+        card.addEventListener("mouseleave", () => card.classList.remove("is-glass-active"));
+        card.addEventListener("click", () => openSheet(product.id));
+      }
       grid.appendChild(card);
     });
+
+    const soonCard = document.createElement("div");
+    soonCard.className = "product-card-soon";
+    soonCard.innerHTML =
+      '<i data-lucide="hourglass"></i>' +
+      '<span>Segera Hadir</span>';
+    grid.appendChild(soonCard);
+    lucide.createIcons();
 
     renderPagination(page);
   }
