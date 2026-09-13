@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masuk atau Daftar - Raymond Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+:root {
+  --color-primary: #1b1b1b;
+  --color-secondary: #e9204f;
+  --color-muted: #d7d7d7;
+  --color-text: #ffffff;
+  --color-surface: #232323;
+  --color-border: rgba(215, 215, 215, 0.15);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: url('assets/auth-bg.jpg') center / cover no-repeat;
+  color: var(--color-text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.app {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-header {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  z-index: 10;
+}
+
+.auth-back {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.auth-back i {
+  width: 22px;
+  height: 22px;
+  stroke: var(--color-text);
+}
+
+.auth-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-mode-toggle button {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.auth-mode-toggle button.active {
+  color: var(--color-secondary);
+}
+
+.auth-mode-toggle .divider {
+  color: var(--color-border);
+  font-size: 13px;
+}
+
+.auth-sheet {
+  background: var(--color-surface);
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.sheet-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+  text-transform: uppercase;
+}
+
+.sheet-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 4px;
+  margin-bottom: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-field {
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  padding: 16px 14px 16px;
+  background: var(--color-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  color: var(--color-text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.form-input::placeholder {
+  color: transparent;
+}
+
+.form-input:focus {
+  border-color: var(--color-secondary);
+}
+
+.form-field label {
+  position: absolute;
+  left: 14px;
+  top: 16px;
+  font-size: 14px;
+  color: var(--color-muted);
+  opacity: 0.5;
+  background: transparent;
+  padding: 0 4px;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus + label,
+.form-input:not(:placeholder-shown) + label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  opacity: 1;
+  background: var(--color-surface);
+}
+
+.form-input:focus + label {
+  color: var(--color-secondary);
+}
+
+.form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.form-checkbox input {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  accent-color: var(--color-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.form-checkbox label {
+  font-size: 12px;
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.form-checkbox a {
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-submit {
+  width: 100%;
+  padding: 14px 0;
+  margin-top: 8px;
+  background: var(--color-secondary);
+  color: var(--color-text);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.form-error {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-secondary);
+}
+
+.footer {
+  border-top: 1px solid var(--color-border);
+  margin-top: 24px;
+  padding-top: 20px;
+  font-size: 11px;
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.footer-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.footer-brand img {
+  height: 20px;
+  width: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 360px) {
+  .form-row-2 {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="auth-header">
+    <button class="auth-back" aria-label="Kembali">
+      <i data-lucide="chevron-left"></i>
+    </button>
+    <div class="auth-mode-toggle">
+      <button class="active" id="triggerSignIn" data-mode="login">Masuk</button>
+      <span class="divider">|</span>
+      <button id="triggerSignUp" data-mode="register">Daftar</button>
+    </div>
+  </header>
+
+  <div class="auth-sheet">
+
+    <div class="sheet-panel active" id="panelLogin">
+      <div class="sheet-label">Masuk</div>
+      <div class="sheet-title">Selamat Datang Kembali</div>
+      <form class="form-grid">
+        <div class="form-field">
+            <input class="form-input" type="text" id="loginUsername" placeholder=" " autocomplete="username">
+            <label for="loginUsername">Username</label>
+          </div>
+
+        <div class="form-field">
+            <input class="form-input" type="password" id="loginPassword" placeholder=" " autocomplete="current-password">
+            <label for="loginPassword">Password</label>
+          </div>
+
+        <div class="form-checkbox">
+          <input type="checkbox" id="loginRemember">
+          <label for="loginRemember">Ingat saya di perangkat ini</label>
+        </div>
+
+        <button class="auth-submit" type="submit">Masuk</button>
+      </form>
+
+      <footer class="footer">
+        <div class="footer-left">
+          <div>Raymond Store Support With Pencylgon</div>
+          <div>Developed by Ilann</div>
+        </div>
+        <div class="footer-right">
+          <div class="footer-brand">
+            <img src="assets/brand.png" alt="Raymond Store">
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <div class="sheet-panel" id="panelRegister" style="display: none;">
+      <div class="sheet-label">Daftar</div>
+      <div class="sheet-title">Buat Akun Baru</div>
+      <form class="form-grid">
+        <div class="form-field">
+            <input class="form-input" type="text" id="registerUsername" placeholder=" " autocomplete="username">
+            <label for="registerUsername">Username</label>
+          </div>
+
+        <div class="form-row-2">
+          <div class="form-field">
+            <input class="form-input" type="tel" id="registerPhone" placeholder=" " autocomplete="tel">
+            <label for="registerPhone">Nomor HP</label>
+          </div>
+
+          <div class="form-field">
+            <input class="form-input" type="email" id="registerEmail" placeholder=" " autocomplete="email">
+            <label for="registerEmail">Email</label>
+          </div>
+        </div>
+
+        <div class="form-field">
+            <input class="form-input" type="password" id="registerPassword" placeholder=" " autocomplete="new-password">
+            <label for="registerPassword">Password</label>
+          </div>
+
+        <div class="form-field">
+            <input class="form-input" type="password" id="registerConfirmPassword" placeholder=" " autocomplete="new-password">
+            <label for="registerConfirmPassword">Konfirmasi Password</label>
+          </div>
+
+        <div class="form-checkbox">
+          <input type="checkbox" id="registerTerms">
+          <label for="registerTerms">Saya menyetujui <a href="#">Syarat & Ketentuan</a> Raymond Store</label>
+        </div>
+
+        <button class="auth-submit" type="submit">Daftar</button>
+      </form>
+
+      <footer class="footer">
+        <div class="footer-left">
+          <div>Raymond Store Support With Pencylgon</div>
+          <div>Developed by Ilann</div>
+        </div>
+        <div class="footer-right">
+          <div class="footer-brand">
+            <img src="assets/brand.png" alt="Raymond Store">
+          </div>
+        </div>
+      </footer>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  const triggerSignIn = document.getElementById("triggerSignIn");
+  const triggerSignUp = document.getElementById("triggerSignUp");
+  const panelLogin = document.getElementById("panelLogin");
+  const panelRegister = document.getElementById("panelRegister");
+
+  function setMode(mode) {
+    if (mode === "register") {
+      panelLogin.style.display = "none";
+      panelRegister.style.display = "block";
+      triggerSignIn.classList.remove("active");
+      triggerSignUp.classList.add("active");
+    } else {
+      panelRegister.style.display = "none";
+      panelLogin.style.display = "block";
+      triggerSignUp.classList.remove("active");
+      triggerSignIn.classList.add("active");
+    }
+  }
+
+  triggerSignIn.addEventListener("click", () => setMode("login"));
+  triggerSignUp.addEventListener("click", () => setMode("register"));
+
+  const formLogin = panelLogin.querySelector("form");
+  const formRegister = panelRegister.querySelector("form");
+
+  function tampilkanPesanError(form, pesan) {
+    let errorBox = form.querySelector(".form-error");
+    if (!errorBox) {
+      errorBox = document.createElement("div");
+      errorBox.className = "form-error";
+      form.insertBefore(errorBox, form.querySelector(".auth-submit"));
+    }
+    errorBox.textContent = pesan;
+  }
+
+  formLogin.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        tampilkanPesanError(formLogin, data.error || "Gagal login");
+        return;
+      }
+
+      if (data.role === "admin") {
+        window.location.href = "/app/owner";
+      } else {
+        window.location.href = "/app";
+      }
+    } catch (error) {
+      tampilkanPesanError(formLogin, "Tidak bisa terhubung ke server");
+    }
+  });
+
+  formRegister.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const username = document.getElementById("registerUsername").value.trim();
+    const nomorHp = document.getElementById("registerPhone").value.trim();
+    const email = document.getElementById("registerEmail").value.trim();
+    const password = document.getElementById("registerPassword").value;
+    const konfirmasiPassword = document.getElementById("registerConfirmPassword").value;
+    const setuju = document.getElementById("registerTerms").checked;
+
+    if (!setuju) {
+      tampilkanPesanError(formRegister, "Setujui syarat dan ketentuan terlebih dahulu");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, email, nomorHp, password, konfirmasiPassword }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        tampilkanPesanError(formRegister, data.error || "Gagal mendaftar");
+        return;
+      }
+
+      window.location.href = "/app";
+    } catch (error) {
+      tampilkanPesanError(formRegister, "Tidak bisa terhubung ke server");
+    }
+  });
+
+  lucide.createIcons();
+</script>
+</body>
+</html>

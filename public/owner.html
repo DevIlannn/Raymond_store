@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin - Raymond Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+:root {
+  --color-primary: #1b1b1b;
+  --color-secondary: #e9204f;
+  --color-muted: #d7d7d7;
+  --color-text: #ffffff;
+  --color-surface: #232323;
+  --color-surface-alt: #2b2b2b;
+  --color-border: rgba(215, 215, 215, 0.15);
+  --color-danger: #e9204f;
+  --color-success: #2ecc71;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: var(--color-primary);
+  color: var(--color-text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.app {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  padding: 20px 20px 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+  text-transform: uppercase;
+}
+
+.admin-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.logout-btn i {
+  width: 16px;
+  height: 16px;
+  stroke: var(--color-text);
+}
+
+.admin-body {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-heading i {
+  width: 18px;
+  height: 18px;
+  stroke: var(--color-secondary);
+}
+
+.section-heading span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+}
+
+.card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.card-row + .card-row {
+  border-top: 1px solid var(--color-border);
+}
+
+.card-row-label {
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.card-row-value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.stat-card {
+  background: var(--color-surface);
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--color-surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-icon i {
+  width: 16px;
+  height: 16px;
+  stroke: var(--color-secondary);
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.field input,
+.field select,
+.field textarea {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 12px;
+  color: var(--color-text);
+  font-size: 13px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: 1px solid var(--color-secondary);
+}
+
+.upload-zone {
+  border: 1px dashed var(--color-border);
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.upload-zone i {
+  width: 24px;
+  height: 24px;
+  stroke: var(--color-muted);
+}
+
+.upload-zone span {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.upload-preview {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--color-surface-alt);
+}
+
+.upload-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.banner-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.banner-preview-item {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--color-surface-alt);
+}
+
+.banner-preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.banner-remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(27, 27, 27, 0.7);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.banner-remove-btn i {
+  width: 14px;
+  height: 14px;
+  stroke: var(--color-text);
+}
+
+.variant-block {
+  background: var(--color-surface-alt);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.variant-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.variant-block-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.variant-remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.variant-remove-btn i {
+  width: 15px;
+  height: 15px;
+  stroke: var(--color-danger);
+}
+
+.variant-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn i {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-primary {
+  background: var(--color-secondary);
+  color: var(--color-text);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.btn-outline i {
+  stroke: var(--color-text);
+}
+
+.btn-primary i {
+  stroke: var(--color-text);
+}
+
+.btn-danger-outline {
+  background: transparent;
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
+}
+
+.btn-danger-outline i {
+  stroke: var(--color-danger);
+}
+
+.desc-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.desc-item textarea {
+  flex: 1;
+}
+
+.desc-remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.desc-remove-btn i {
+  width: 16px;
+  height: 16px;
+  stroke: var(--color-danger);
+}
+
+.produk-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.produk-item {
+  display: flex;
+  gap: 12px;
+  background: var(--color-surface);
+  border-radius: 14px;
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  align-items: center;
+}
+
+.produk-item-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--color-surface-alt);
+}
+
+.produk-item-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.produk-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.produk-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.produk-item-meta {
+  font-size: 11px;
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+.produk-item-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.icon-btn i {
+  width: 15px;
+  height: 15px;
+  stroke: var(--color-text);
+}
+
+.icon-btn.danger i {
+  stroke: var(--color-danger);
+}
+
+.empty-state {
+  font-size: 12px;
+  color: var(--color-muted);
+  text-align: center;
+  padding: 20px 0;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 100;
+  transition: transform 0.25s ease;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.error {
+  border-color: var(--color-danger);
+}
+
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-muted);
+}
+
+.tab-item i {
+  width: 20px;
+  height: 20px;
+  stroke: var(--color-muted);
+}
+
+.tab-item span {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.tab-item.active,
+.tab-item.active i {
+  color: var(--color-secondary);
+  stroke: var(--color-secondary);
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.divider-label {
+  font-size: 11px;
+  color: var(--color-muted);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.04em;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="admin-header">
+    <div>
+      <div class="admin-label">Panel Admin</div>
+      <div class="admin-title">Raymond Store</div>
+    </div>
+    <button class="logout-btn" id="logoutBtn">
+      <i data-lucide="log-out"></i>
+      Keluar
+    </button>
+  </header>
+
+  <div class="admin-body">
+
+    <div class="tab-panel active" id="panelDashboard">
+      <div class="section">
+        <div class="section-heading">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Ringkasan</span>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="package"></i></div>
+            <div class="stat-value" id="statTotalProduk">0</div>
+            <div class="stat-label">Total Produk</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="shopping-bag"></i></div>
+            <div class="stat-value" id="statTotalTerjual">0</div>
+            <div class="stat-label">Total Terjual</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="layers"></i></div>
+            <div class="stat-value" id="statTotalStok">0</div>
+            <div class="stat-label">Total Stok</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i data-lucide="image"></i></div>
+            <div class="stat-value" id="statTotalBanner">0</div>
+            <div class="stat-label">Banner Aktif</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-heading">
+          <i data-lucide="megaphone"></i>
+          <span>Banner Promosi</span>
+        </div>
+        <div class="banner-preview-list" id="dashboardBannerList"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-heading">
+          <i data-lucide="list"></i>
+          <span>Daftar Produk</span>
+        </div>
+        <div class="produk-list" id="produkList"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panelProfile">
+      <div class="section">
+        <div class="section-heading">
+          <i data-lucide="user-circle"></i>
+          <span>Informasi Akun</span>
+        </div>
+        <div class="card">
+          <div class="card-row">
+            <span class="card-row-label">Role</span>
+            <span class="card-row-value" id="profileRole">-</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-heading">
+          <i data-lucide="edit-3"></i>
+          <span>Ubah Profil</span>
+        </div>
+        <form id="formProfil" class="section">
+          <div class="field">
+            <label>Username</label>
+            <input type="text" id="profilUsername" required>
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="profilEmail" required>
+          </div>
+          <div class="field">
+            <label>Nomor HP</label>
+            <input type="text" id="profilNomorHp" required>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i data-lucide="save"></i>
+            Simpan Profil
+          </button>
+        </form>
+      </div>
+
+      <div class="section">
+        <div class="section-heading">
+          <i data-lucide="lock"></i>
+          <span>Ganti Password</span>
+        </div>
+        <form id="formPassword" class="section">
+          <div class="field">
+            <label>Password Lama</label>
+            <input type="password" id="passwordLama" required>
+          </div>
+          <div class="field">
+            <label>Password Baru</label>
+            <input type="password" id="passwordBaru" required minlength="6">
+          </div>
+          <button type="submit" class="btn btn-outline">
+            <i data-lucide="key-round"></i>
+            Ganti Password
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panelUpload">
+      <div class="section">
+        <div class="section-heading">
+          <i data-lucide="package-plus"></i>
+          <span id="uploadHeading">Tambah Produk</span>
+        </div>
+        <form id="formProduk" class="section">
+          <input type="hidden" id="produkId">
+
+          <div class="field">
+            <label>Gambar Produk</label>
+            <div class="upload-preview" id="produkPreviewWrap" style="display:none">
+              <img id="produkPreviewImg" src="" alt="Preview produk">
+            </div>
+            <div class="upload-zone" id="produkUploadZone">
+              <i data-lucide="image-plus"></i>
+              <span>Ketuk untuk pilih gambar (base64)</span>
+            </div>
+            <input type="file" id="produkFileInput" accept="image/*" hidden>
+          </div>
+
+          <div class="field">
+            <label>Nama Produk</label>
+            <input type="text" id="produkNama" required>
+          </div>
+
+          <div class="field">
+            <label>Kategori</label>
+            <input type="text" id="produkKategori" required>
+          </div>
+
+          <div class="field">
+            <label>Jumlah Terjual</label>
+            <input type="number" id="produkTerjual" min="0" value="0">
+          </div>
+
+          <div class="field">
+            <label>Deskripsi</label>
+            <div id="deskripsiList" class="section" style="gap:8px"></div>
+            <button type="button" class="btn btn-outline" id="tambahDeskripsiBtn">
+              <i data-lucide="plus"></i>
+              Tambah Paragraf
+            </button>
+          </div>
+
+          <div class="field">
+            <label>Varian</label>
+            <div id="varianList" class="section" style="gap:10px"></div>
+            <button type="button" class="btn btn-outline" id="tambahVarianBtn">
+              <i data-lucide="plus"></i>
+              Tambah Varian
+            </button>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <i data-lucide="check"></i>
+            <span id="produkSubmitLabel">Simpan Produk</span>
+          </button>
+          <button type="button" class="btn btn-outline" id="batalEditBtn" style="display:none">
+            <i data-lucide="x"></i>
+            Batal Edit
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panelSettings">
+      <div class="section">
+        <div class="section-heading">
+          <i data-lucide="settings"></i>
+          <span>Banner Promosi</span>
+        </div>
+        <div class="banner-preview-list" id="settingsBannerList"></div>
+        <div class="upload-zone" id="bannerUploadZone">
+          <i data-lucide="image-plus"></i>
+          <span>Ketuk untuk tambah gambar banner (base64)</span>
+        </div>
+        <input type="file" id="bannerFileInput" accept="image/*" multiple hidden>
+        <button type="button" class="btn btn-primary" id="simpanBannerBtn">
+          <i data-lucide="save"></i>
+          Simpan Banner
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="tabbar">
+  <button class="tab-item active" data-panel="panelDashboard">
+    <i data-lucide="layout-dashboard"></i>
+    <span>Dashboard</span>
+  </button>
+  <button class="tab-item" data-panel="panelProfile">
+    <i data-lucide="user-circle"></i>
+    <span>Profile</span>
+  </button>
+  <button class="tab-item" data-panel="panelUpload">
+    <i data-lucide="package-plus"></i>
+    <span>Upload</span>
+  </button>
+  <button class="tab-item" data-panel="panelSettings">
+    <i data-lucide="settings"></i>
+    <span>Settings</span>
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let produkCache = [];
+  let bannerCache = [];
+  let deskripsiCount = 0;
+  let varianCount = 0;
+
+  function tampilkanToast(pesan, isError) {
+    const toast = document.getElementById("toast");
+    toast.textContent = pesan;
+    toast.className = "toast show" + (isError ? " error" : "");
+    setTimeout(() => {
+      toast.className = "toast";
+    }, 2600);
+  }
+
+  function formatRupiah(value) {
+    return "Rp" + Number(value || 0).toLocaleString("id-ID");
+  }
+
+  function fileKeBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function muatSesiAdmin() {
+    try {
+      const response = await fetch("/api/me", { credentials: "include" });
+      const data = await response.json();
+
+      if (!data.login || data.role !== "admin") {
+        window.location.href = "/auth";
+        return;
+      }
+
+      document.getElementById("profileRole").textContent = data.role;
+      document.getElementById("profilUsername").value = data.username;
+    } catch (error) {
+      window.location.href = "/auth";
+      return;
+    }
+
+    await muatDataProfil();
+    await muatDataProduk();
+    await muatDataBanner();
+  }
+
+  async function muatDataProfil() {
+    const response = await fetch("/api/me", { credentials: "include" });
+    const data = await response.json();
+    document.getElementById("profilUsername").value = data.username || "";
+  }
+
+  function tambahBarisDeskripsi(nilai) {
+    deskripsiCount++;
+    const id = "desk_" + deskripsiCount;
+    const wrap = document.createElement("div");
+    wrap.className = "desc-item";
+    wrap.id = id;
+    wrap.innerHTML =
+      '<textarea placeholder="Tulis paragraf deskripsi">' + (nilai || "") + '</textarea>' +
+      '<button type="button" class="desc-remove-btn" data-target="' + id + '"><i data-lucide="trash-2"></i></button>';
+    document.getElementById("deskripsiList").appendChild(wrap);
+    lucide.createIcons();
+  }
+
+  function tambahBarisVarian(data) {
+    varianCount++;
+    const id = "var_" + varianCount;
+    const wrap = document.createElement("div");
+    wrap.className = "variant-block";
+    wrap.id = id;
+    wrap.innerHTML =
+      '<div class="variant-block-header">' +
+        '<span class="variant-block-title">Varian</span>' +
+        '<button type="button" class="variant-remove-btn" data-target="' + id + '"><i data-lucide="trash-2"></i></button>' +
+      '</div>' +
+      '<div class="field"><label>Nama Varian</label><input type="text" class="varian-label" value="' + (data && data.label || "") + '"></div>' +
+      '<div class="variant-grid">' +
+        '<div class="field"><label>Harga</label><input type="number" class="varian-price" min="0" value="' + (data && data.price || 0) + '"></div>' +
+        '<div class="field"><label>Diskon %</label><input type="number" class="varian-discount" min="0" max="100" value="' + (data && data.discountPercent || 0) + '"></div>' +
+      '</div>' +
+      '<div class="field"><label>Stok</label><input type="number" class="varian-stock" min="0" value="' + (data && data.stock || 0) + '"></div>';
+    document.getElementById("varianList").appendChild(wrap);
+    lucide.createIcons();
+  }
+
+  document.getElementById("tambahDeskripsiBtn").addEventListener("click", () => tambahBarisDeskripsi(""));
+  document.getElementById("tambahVarianBtn").addEventListener("click", () => tambahBarisVarian(null));
+
+  document.getElementById("deskripsiList").addEventListener("click", (e) => {
+    const btn = e.target.closest(".desc-remove-btn");
+    if (btn) document.getElementById(btn.dataset.target).remove();
+  });
+
+  document.getElementById("varianList").addEventListener("click", (e) => {
+    const btn = e.target.closest(".variant-remove-btn");
+    if (btn) document.getElementById(btn.dataset.target).remove();
+  });
+
+  let produkGambarBase64 = "";
+
+  document.getElementById("produkUploadZone").addEventListener("click", () => {
+    document.getElementById("produkFileInput").click();
+  });
+
+  document.getElementById("produkFileInput").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    produkGambarBase64 = await fileKeBase64(file);
+    document.getElementById("produkPreviewImg").src = produkGambarBase64;
+    document.getElementById("produkPreviewWrap").style.display = "block";
+  });
+
+  function resetFormProduk() {
+    document.getElementById("produkId").value = "";
+    document.getElementById("produkNama").value = "";
+    document.getElementById("produkKategori").value = "";
+    document.getElementById("produkTerjual").value = 0;
+    document.getElementById("deskripsiList").innerHTML = "";
+    document.getElementById("varianList").innerHTML = "";
+    document.getElementById("produkPreviewWrap").style.display = "none";
+    document.getElementById("produkPreviewImg").src = "";
+    produkGambarBase64 = "";
+    document.getElementById("uploadHeading").textContent = "Tambah Produk";
+    document.getElementById("produkSubmitLabel").textContent = "Simpan Produk";
+    document.getElementById("batalEditBtn").style.display = "none";
+    tambahBarisDeskripsi("");
+    tambahBarisVarian(null);
+  }
+
+  document.getElementById("batalEditBtn").addEventListener("click", resetFormProduk);
+
+  function isiFormUntukEdit(produk) {
+    document.getElementById("produkId").value = produk.id;
+    document.getElementById("produkNama").value = produk.nama;
+    document.getElementById("produkKategori").value = produk.kategori;
+    document.getElementById("produkTerjual").value = produk.terjual;
+    produkGambarBase64 = produk.gambar;
+    document.getElementById("produkPreviewImg").src = produk.gambar;
+    document.getElementById("produkPreviewWrap").style.display = "block";
+
+    document.getElementById("deskripsiList").innerHTML = "";
+    const deskripsi = Array.isArray(produk.deskripsi) ? produk.deskripsi : [];
+    if (deskripsi.length === 0) {
+      tambahBarisDeskripsi("");
+    } else {
+      deskripsi.forEach((paragraf) => tambahBarisDeskripsi(paragraf));
+    }
+
+    document.getElementById("varianList").innerHTML = "";
+    const varian = Array.isArray(produk.varian) ? produk.varian : [];
+    if (varian.length === 0) {
+      tambahBarisVarian(null);
+    } else {
+      varian.forEach((item) => tambahBarisVarian(item));
+    }
+
+    document.getElementById("uploadHeading").textContent = "Edit Produk";
+    document.getElementById("produkSubmitLabel").textContent = "Perbarui Produk";
+    document.getElementById("batalEditBtn").style.display = "flex";
+
+    document.querySelectorAll(".tab-item").forEach((tab) => tab.classList.remove("active"));
+    document.querySelector('.tab-item[data-panel="panelUpload"]').classList.add("active");
+    document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
+    document.getElementById("panelUpload").classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.getElementById("formProduk").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if (!produkGambarBase64) {
+      tampilkanToast("Gambar produk wajib diisi", true);
+      return;
+    }
+
+    const deskripsi = Array.from(document.querySelectorAll("#deskripsiList textarea"))
+      .map((el) => el.value.trim())
+      .filter((val) => val.length > 0);
+
+    const varian = Array.from(document.querySelectorAll("#varianList .variant-block")).map((block) => ({
+      label: block.querySelector(".varian-label").value.trim(),
+      price: Number(block.querySelector(".varian-price").value) || 0,
+      discountPercent: Number(block.querySelector(".varian-discount").value) || 0,
+      stock: Number(block.querySelector(".varian-stock").value) || 0,
+    }));
+
+    const payload = {
+      nama: document.getElementById("produkNama").value.trim(),
+      kategori: document.getElementById("produkKategori").value.trim(),
+      gambar: produkGambarBase64,
+      terjual: Number(document.getElementById("produkTerjual").value) || 0,
+      deskripsi,
+      varian,
+    };
+
+    const produkId = document.getElementById("produkId").value;
+    const isEdit = Boolean(produkId);
+
+    try {
+      const response = await fetch(isEdit ? "/api/produk/" + produkId : "/api/produk", {
+        method: isEdit ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        tampilkanToast(data.error || "Gagal menyimpan produk", true);
+        return;
+      }
+      tampilkanToast(isEdit ? "Produk berhasil diperbarui" : "Produk berhasil ditambahkan");
+      resetFormProduk();
+      await muatDataProduk();
+    } catch (error) {
+      tampilkanToast("Gagal menyimpan produk", true);
+    }
+  });
+
+  async function muatDataProduk() {
+    try {
+      const response = await fetch("/api/produk", { credentials: "include" });
+      const data = await response.json();
+      produkCache = data.produk || [];
+      renderProdukList();
+      renderStatistik();
+    } catch (error) {
+      tampilkanToast("Gagal memuat produk", true);
+    }
+  }
+
+  function renderProdukList() {
+    const wrap = document.getElementById("produkList");
+    wrap.innerHTML = "";
+
+    if (produkCache.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">Belum ada produk</div>';
+      return;
+    }
+
+    produkCache.forEach((produk) => {
+      const totalStok = (produk.varian || []).reduce((acc, v) => acc + (Number(v.stock) || 0), 0);
+      const item = document.createElement("div");
+      item.className = "produk-item";
+      item.innerHTML =
+        '<div class="produk-item-img"><img src="' + produk.gambar + '" alt="' + produk.nama + '"></div>' +
+        '<div class="produk-item-body">' +
+          '<div class="produk-item-name">' + produk.nama + '</div>' +
+          '<div class="produk-item-meta">' + produk.kategori + ' &middot; Stok ' + totalStok + ' &middot; Terjual ' + produk.terjual + '</div>' +
+        '</div>' +
+        '<div class="produk-item-actions">' +
+          '<button class="icon-btn" data-edit="' + produk.id + '"><i data-lucide="pencil"></i></button>' +
+          '<button class="icon-btn danger" data-hapus="' + produk.id + '"><i data-lucide="trash-2"></i></button>' +
+        '</div>';
+      wrap.appendChild(item);
+    });
+
+    lucide.createIcons();
+  }
+
+  document.getElementById("produkList").addEventListener("click", async (e) => {
+    const editBtn = e.target.closest("[data-edit]");
+    const hapusBtn = e.target.closest("[data-hapus]");
+
+    if (editBtn) {
+      const produk = produkCache.find((p) => String(p.id) === editBtn.dataset.edit);
+      if (produk) isiFormUntukEdit(produk);
+      return;
+    }
+
+    if (hapusBtn) {
+      const konfirmasi = confirm("Hapus produk ini?");
+      if (!konfirmasi) return;
+      try {
+        const response = await fetch("/api/produk/" + hapusBtn.dataset.hapus, {
+          method: "DELETE",
+          credentials: "include",
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          tampilkanToast(data.error || "Gagal menghapus produk", true);
+          return;
+        }
+        tampilkanToast("Produk berhasil dihapus");
+        await muatDataProduk();
+      } catch (error) {
+        tampilkanToast("Gagal menghapus produk", true);
+      }
+    }
+  });
+
+  function renderStatistik() {
+    document.getElementById("statTotalProduk").textContent = produkCache.length;
+
+    const totalTerjual = produkCache.reduce((acc, p) => acc + (Number(p.terjual) || 0), 0);
+    document.getElementById("statTotalTerjual").textContent = totalTerjual;
+
+    const totalStok = produkCache.reduce((acc, p) => {
+      const stokProduk = (p.varian || []).reduce((a, v) => a + (Number(v.stock) || 0), 0);
+      return acc + stokProduk;
+    }, 0);
+    document.getElementById("statTotalStok").textContent = totalStok;
+
+    document.getElementById("statTotalBanner").textContent = bannerCache.length;
+  }
+
+  async function muatDataBanner() {
+    try {
+      const response = await fetch("/api/banner", { credentials: "include" });
+      const data = await response.json();
+      bannerCache = (data.banner || []).map((b) => b.gambar);
+      renderBannerPreview();
+      renderStatistik();
+    } catch (error) {
+      tampilkanToast("Gagal memuat banner", true);
+    }
+  }
+
+  function renderBannerPreview() {
+    const dashboardWrap = document.getElementById("dashboardBannerList");
+    const settingsWrap = document.getElementById("settingsBannerList");
+
+    if (bannerCache.length === 0) {
+      dashboardWrap.innerHTML = '<div class="empty-state">Belum ada banner</div>';
+    } else {
+      dashboardWrap.innerHTML = bannerCache
+        .map((src) => '<div class="banner-preview-item"><img src="' + src + '" alt="Banner"></div>')
+        .join("");
+    }
+
+    settingsWrap.innerHTML = "";
+    if (bannerCache.length === 0) {
+      settingsWrap.innerHTML = '<div class="empty-state">Belum ada banner</div>';
+    } else {
+      bannerCache.forEach((src, index) => {
+        const item = document.createElement("div");
+        item.className = "banner-preview-item";
+        item.innerHTML =
+          '<img src="' + src + '" alt="Banner ' + (index + 1) + '">' +
+          '<button type="button" class="banner-remove-btn" data-index="' + index + '"><i data-lucide="x"></i></button>';
+        settingsWrap.appendChild(item);
+      });
+    }
+    lucide.createIcons();
+  }
+
+  document.getElementById("settingsBannerList").addEventListener("click", (e) => {
+    const btn = e.target.closest(".banner-remove-btn");
+    if (!btn) return;
+    bannerCache.splice(Number(btn.dataset.index), 1);
+    renderBannerPreview();
+  });
+
+  document.getElementById("bannerUploadZone").addEventListener("click", () => {
+    document.getElementById("bannerFileInput").click();
+  });
+
+  document.getElementById("bannerFileInput").addEventListener("change", async (e) => {
+    const files = Array.from(e.target.files);
+    for (const file of files) {
+      const base64 = await fileKeBase64(file);
+      bannerCache.push(base64);
+    }
+    renderBannerPreview();
+    e.target.value = "";
+  });
+
+  document.getElementById("simpanBannerBtn").addEventListener("click", async () => {
+    if (bannerCache.length === 0) {
+      tampilkanToast("Minimal satu banner wajib diisi", true);
+      return;
+    }
+    try {
+      const response = await fetch("/api/banner", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ gambar: bannerCache }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        tampilkanToast(data.error || "Gagal menyimpan banner", true);
+        return;
+      }
+      tampilkanToast("Banner berhasil disimpan");
+      await muatDataBanner();
+    } catch (error) {
+      tampilkanToast("Gagal menyimpan banner", true);
+    }
+  });
+
+  document.getElementById("formProfil").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const payload = {
+      username: document.getElementById("profilUsername").value.trim(),
+      email: document.getElementById("profilEmail").value.trim(),
+      nomorHp: document.getElementById("profilNomorHp").value.trim(),
+    };
+    try {
+      const response = await fetch("/api/profil", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        tampilkanToast(data.error || "Gagal memperbarui profil", true);
+        return;
+      }
+      tampilkanToast("Profil berhasil diperbarui");
+    } catch (error) {
+      tampilkanToast("Gagal memperbarui profil", true);
+    }
+  });
+
+  document.getElementById("formPassword").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const payload = {
+      passwordLama: document.getElementById("passwordLama").value,
+      passwordBaru: document.getElementById("passwordBaru").value,
+    };
+    try {
+      const response = await fetch("/api/profil/password", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        tampilkanToast(data.error || "Gagal mengganti password", true);
+        return;
+      }
+      tampilkanToast("Password berhasil diganti");
+      document.getElementById("formPassword").reset();
+    } catch (error) {
+      tampilkanToast("Gagal mengganti password", true);
+    }
+  });
+
+  document.querySelectorAll(".tab-item").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab-item").forEach((item) => item.classList.remove("active"));
+      document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById(tab.dataset.panel).classList.add("active");
+    });
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await fetch("/api/logout", { method: "POST", credentials: "include" });
+    window.location.href = "/auth";
+  });
+
+  tambahBarisDeskripsi("");
+  tambahBarisVarian(null);
+  muatSesiAdmin();
+  lucide.createIcons();
+</script>
+</body>
+</html>
